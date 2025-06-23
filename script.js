@@ -70,7 +70,28 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('total-points').textContent = totalPoints.toFixed(2);
         document.getElementById('gpa').textContent = gpa.toFixed(2);
     }
-    
+    const presetSubjects = [
+        { name: "OOP", credits: 3, percentage: "" },
+        { name: "OOP Lab", credits: 1, percentage: "" },
+        { name: "Applied Physics", credits: 3, percentage: "" },
+        { name: "DLD", credits: 2, percentage: "" },
+        { name: "DLD Lab", credits: 1, percentage: "" },
+        { name: "Expository Writing", credits: 3, percentage: "" },
+        { name: "Probability & Statistics", credits: 3, percentage: "" },
+        { name: "Quran Translation", credits: 0.5, percentage: "" }
+    ];
+
+    // Load preset subjects
+    document.getElementById('load-preset').addEventListener('click', function() {
+        // Clear existing subjects
+        document.getElementById('subjects-container').innerHTML = "";
+        
+        // Add all preset subjects
+        presetSubjects.forEach(subject => {
+            addSubject(subject.name, subject.credits, subject.percentage);
+        });
+    });
+
     // Event listeners
     addSubjectBtn.addEventListener('click', function() {
         addSubject();
