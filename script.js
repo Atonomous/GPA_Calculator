@@ -2,33 +2,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const subjectsContainer = document.getElementById('subjects-container');
     const addSubjectBtn = document.getElementById('add-subject');
     
-    // Grading scale based on your requirements
-    const gradePoints = {
-        'A': 4.00,   // 85% & above
-        'A-': 3.70,  // 80-84%
-        'B+': 3.30,  // 75-79%
-        'B': 3.00,   // 70-74%
-        'B-': 2.70,  // 65-69%
-        'C+': 2.30,  // 61-64%
-        'C': 2.00,   // 58-60%
-        'C-': 1.70,  // 55-57%
-        'D': 1.00,   // 50-54%
-        'F': 0.00    // Below 50%
-    };
-    
-    // Convert percentage to grade
-    function percentageToGrade(percentage) {
+    // Percentage to GPA points conversion
+    function percentageToPoints(percentage) {
         percentage = parseFloat(percentage);
-        if (percentage >= 85) return 'A';
-        if (percentage >= 80) return 'A-';
-        if (percentage >= 75) return 'B+';
-        if (percentage >= 70) return 'B';
-        if (percentage >= 65) return 'B-';
-        if (percentage >= 61) return 'C+';
-        if (percentage >= 58) return 'C';
-        if (percentage >= 55) return 'C-';
-        if (percentage >= 50) return 'D';
-        return 'F';
+        if (percentage >= 85) return 4.00;
+        if (percentage >= 80) return 3.70;
+        if (percentage >= 75) return 3.30;
+        if (percentage >= 70) return 3.00;
+        if (percentage >= 65) return 2.70;
+        if (percentage >= 61) return 2.30;
+        if (percentage >= 58) return 2.00;
+        if (percentage >= 55) return 1.70;
+        if (percentage >= 50) return 1.00;
+        return 0.00;
     }
     
     // Add a new subject row
@@ -40,18 +26,17 @@ document.addEventListener('DOMContentLoaded', function() {
             <input type="text" class="subject-name" placeholder="Subject" value="${name}">
             <input type="number" class="credit-hours" placeholder="Credits" min="0" step="0.5" value="${credits}">
             <input type="number" class="percentage" placeholder="%" min="0" max="100" value="${percentage}">
-            <span class="grade-display">${percentage ? percentageToGrade(percentage) : ''}</span>
+            <span class="points">${percentage ? percentageToPoints(percentage).toFixed(2) : ''}</span>
             <button class="remove-btn">×</button>
         `;
         
-        // Update grade display when percentage changes
+        // Update points when percentage changes
         const percentageInput = subjectRow.querySelector('.percentage');
-        const gradeDisplay = subjectRow.querySelector('.grade-display');
+        const pointsDisplay = subjectRow.querySelector('.points');
         
         percentageInput.addEventListener('input', function() {
-            const grade = percentageToGrade(this.value);
-            gradeDisplay.textContent = grade;
-            gradeDisplay.className = 'grade-display grade-' + grade.replace('+', '').replace('-', '');
+            const points = percentageToPoints(this.value);
+            pointsDisplay.textContent = points.toFixed(2);
             calculateGPA();
         });
         
@@ -73,11 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         subjectRows.forEach(row => {
             const credits = parseFloat(row.querySelector('.credit-hours').value) || 0;
-            const percentage = parseFloat(row.querySelector('.percentage').value) || 0;
-            const grade = percentageToGrade(percentage);
+            const points = parseFloat(row.querySelector('.points').textContent) || 0;
             
             totalCredits += credits;
-            totalPoints += credits * gradePoints[grade];
+            totalPoints += credits * points;
         });
         
         const gpa = totalCredits > 0 ? (totalPoints / totalCredits) : 0;

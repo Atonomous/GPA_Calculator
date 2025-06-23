@@ -5,11 +5,6 @@
     --text-color: #333;
     --border-color: #ddd;
     --highlight-color: #4CAF50;
-    --grade-a: #4CAF50;
-    --grade-b: #8BC34A;
-    --grade-c: #FFC107;
-    --grade-d: #FF9800;
-    --grade-f: #F44336;
 }
 
 * {
@@ -70,14 +65,14 @@ h1, h2, h3 {
     align-items: center;
 }
 
-.subject-row input, .subject-row select {
+.subject-row input {
     padding: 8px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
 }
 
 .subject-name {
-    width: 30%;
+    width: 40%;
 }
 
 .credit-hours {
@@ -88,20 +83,11 @@ h1, h2, h3 {
     width: 15%;
 }
 
-.grade-display {
+.points {
     width: 15%;
     text-align: center;
     font-weight: bold;
 }
-
-.grade-A { color: var(--grade-a); }
-.grade-A- { color: var(--grade-a); }
-.grade-B { color: var(--grade-b); }
-.grade-B- { color: var(--grade-b); }
-.grade-C { color: var(--grade-c); }
-.grade-C- { color: var(--grade-c); }
-.grade-D { color: var(--grade-d); }
-.grade-F { color: var(--grade-f); }
 
 .remove-btn {
     width: 10%;
@@ -204,7 +190,7 @@ footer a:hover {
         flex-wrap: wrap;
     }
     
-    .subject-name, .credit-hours, .percentage, .grade-display {
+    .subject-name, .credit-hours, .percentage, .points {
         width: 100%;
         margin-bottom: 5px;
     }
