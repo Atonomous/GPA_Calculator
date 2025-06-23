@@ -1,45 +1,58 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize with empty subject list
     const subjectsContainer = document.getElementById('subjects-container');
     const addSubjectBtn = document.getElementById('add-subject');
-    const loadPresetBtn = document.getElementById('load-preset');
     
-    // Grade to points mapping
+    // Grading scale based on your requirements
     const gradePoints = {
-        'A+': 4.0,
-        'A': 4.0,
-        'A-': 3.7,
-        'B+': 3.3,
-        'B': 3.0,
-        'B-': 2.7,
-        'C+': 2.3,
-        'C': 2.0,
-        'C-': 1.7,
-        'D+': 1.3,
-        'D': 1.0,
-        'F': 0.0
+        'A': 4.00,   // 85% & above
+        'A-': 3.70,  // 80-84%
+        'B+': 3.30,  // 75-79%
+        'B': 3.00,   // 70-74%
+        'B-': 2.70,  // 65-69%
+        'C+': 2.30,  // 61-64%
+        'C': 2.00,   // 58-60%
+        'C-': 1.70,  // 55-57%
+        'D': 1.00,   // 50-54%
+        'F': 0.00    // Below 50%
     };
     
+    // Convert percentage to grade
+    function percentageToGrade(percentage) {
+        percentage = parseFloat(percentage);
+        if (percentage >= 85) return 'A';
+        if (percentage >= 80) return 'A-';
+        if (percentage >= 75) return 'B+';
+        if (percentage >= 70) return 'B';
+        if (percentage >= 65) return 'B-';
+        if (percentage >= 61) return 'C+';
+        if (percentage >= 58) return 'C';
+        if (percentage >= 55) return 'C-';
+        if (percentage >= 50) return 'D';
+        return 'F';
+    }
+    
     // Add a new subject row
-    function addSubject(name = '', credits = '', grade = '') {
+    function addSubject(name = '', credits = '', percentage = '') {
         const subjectRow = document.createElement('div');
         subjectRow.className = 'subject-row';
         
         subjectRow.innerHTML = `
-            <input type="text" class="subject-name" placeholder="Subject name" value="${name}">
+            <input type="text" class="subject-name" placeholder="Subject" value="${name}">
             <input type="number" class="credit-hours" placeholder="Credits" min="0" step="0.5" value="${credits}">
-            <select class="grade">
-                ${Object.keys(gradePoints).map(g => 
-                    `<option value="${g}" ${grade === g ? 'selected' : ''}>${g}</option>`
-                ).join('')}
-            </select>
+            <input type="number" class="percentage" placeholder="%" min="0" max="100" value="${percentage}">
+            <span class="grade-display">${percentage ? percentageToGrade(percentage) : ''}</span>
             <button class="remove-btn">×</button>
         `;
         
-        // Add event listeners for changes
-        const inputs = subjectRow.querySelectorAll('input, select');
-        inputs.forEach(input => {
-            input.addEventListener('change', calculateGPA);
+        // Update grade display when percentage changes
+        const percentageInput = subjectRow.querySelector('.percentage');
+        const gradeDisplay = subjectRow.querySelector('.grade-display');
+        
+        percentageInput.addEventListener('input', function() {
+            const grade = percentageToGrade(this.value);
+            gradeDisplay.textContent = grade;
+            gradeDisplay.className = 'grade-display grade-' + grade.replace('+', '').replace('-', '');
+            calculateGPA();
         });
         
         // Add remove button functionality
@@ -60,7 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         subjectRows.forEach(row => {
             const credits = parseFloat(row.querySelector('.credit-hours').value) || 0;
-            const grade = row.querySelector('.grade').value;
+            const percentage = parseFloat(row.querySelector('.percentage').value) || 0;
+            const grade = percentageToGrade(percentage);
             
             totalCredits += credits;
             totalPoints += credits * gradePoints[grade];
@@ -73,30 +87,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('gpa').textContent = gpa.toFixed(2);
     }
     
-    // Load preset subjects
-    function loadPresetSubjects() {
-        // Clear existing subjects
-        subjectsContainer.innerHTML = '';
-        
-        // Add predefined subjects
-        addSubject('OOP', '3', 'A');
-        addSubject('OOP Lab', '1', 'A');
-        addSubject('Applied Physics', '3', 'A');
-        addSubject('DLD', '2', 'A');
-        addSubject('DLD Lab', '1', 'A');
-        addSubject('Expository Writing', '3', 'A');
-        addSubject('Probability & Statistics', '3', 'A');
-        addSubject('Quran Translation', '0.5', 'A');
-        
-        calculateGPA();
-    }
-    
     // Event listeners
     addSubjectBtn.addEventListener('click', function() {
         addSubject();
     });
-    
-    loadPresetBtn.addEventListener('click', loadPresetSubjects);
     
     // Initialize with one empty subject
     addSubject();
